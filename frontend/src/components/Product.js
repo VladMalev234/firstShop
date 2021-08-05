@@ -8,6 +8,7 @@ const Product = ( {product} ) => {
     return (
       // картинка продукта с сылкой на продукт
        <Card className="my-3" >
+          {/* Сылка на сам продукт по айди */}
           <Link to={`/product/${product._id}`}>
              <Card.Img src={product.image} variant='top' />
           </Link>
