@@ -4,10 +4,11 @@ import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap'
 import Rating from '../components/Rating'
 import products from '../products'
 
-// экран где при клике на конкретный продукт будет отображаться конкретно выюранный продукт
+// экран где при клике на конкретный продукт будет отображаться страница с конкретно выбранный продукт
 const ProductScreen = ({match}) => {
-    //будет выдавать тот продукт у которого id эквивалентно id в url адрессе
-    console.log(match);
+    //будет выдавать тот продукт у которого id эквивалентно id в url адрессе match.params.id который беоем из props
+    //console.log(match);
+    // находит и возвращает, если срабатывает условие
     const product = products.find(p => p._id === match.params.id)
 
     return (
@@ -38,7 +39,7 @@ const ProductScreen = ({match}) => {
                         </ListGroup.Item>
 
                         <ListGroup.Item>
-                            DSescription: {product.description}
+                            Description: {product.description}
                         </ListGroup.Item>
 
                     </ListGroup>
@@ -60,7 +61,7 @@ const ProductScreen = ({match}) => {
                                 <Col>{product.countInStock > 0 ? "In Stock" : "Out of Stock"}</Col>
                             </Row>
                         </ListGroup.Item>
-
+{/* Button disabled когда нет продуктов в магазине */}
                         <ListGroup.Item>
                             <Button className="btn-block" type="button" disabled={product.countInStock === 0 }>
                                 Add to Cart
