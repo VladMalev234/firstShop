@@ -1,15 +1,28 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import  { Link } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap'
 import Rating from '../components/Rating'
-import products from '../products'
+import axios from 'axios'
 
 // экран где при клике на конкретный продукт будет отображаться страница с конкретно выбранный продукт
 const ProductScreen = ({match}) => {
     //будет выдавать тот продукт у которого id эквивалентно id в url адрессе match.params.id который беоем из props
     //console.log(match);
     // находит и возвращает, если срабатывает условие
-    const product = products.find(p => p._id === match.params.id)
+    //const product = products.find(p => p._id === match.params.id)
+    const [product, setProduct] = useState({})
+
+    useEffect(() => {
+        //делаем запрос, получаем промис, командой then делаем из него обьект
+        const fetchProduct = async() => {
+            const {data} = await axios.get(`/api/products/${match.params.id}`)
+
+            //получакм обьект с ключем data изменяем стейт с помощью функции 
+            setProduct(data)
+        }
+
+        fetchProduct()
+    }, [match])
 
     return (
         <>
