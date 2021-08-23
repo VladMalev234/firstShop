@@ -13,7 +13,7 @@ router.get(
     asyncHandler(async (req, res) => {
     // для получения всез продуктов с модели продуктов
     const products = await Product.find({})
-
+    
     // для конвертации в джейсон формат
     res.json(products)
  }))

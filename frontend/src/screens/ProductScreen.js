@@ -1,35 +1,37 @@
-import React, {useState, useEffect} from 'react'
+import React, { useEffect } from 'react'
 import  { Link } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap'
 import Rating from '../components/Rating'
-import axios from 'axios'
+import {listProductsDetails} from '../actions/productActions'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+
 
 // экран где при клике на конкретный продукт будет отображаться страница с конкретно выбранный продукт
 const ProductScreen = ({match}) => {
-    //будет выдавать тот продукт у которого id эквивалентно id в url адрессе match.params.id который беоем из props
-    //console.log(match);
-    // находит и возвращает, если срабатывает условие
-    //const product = products.find(p => p._id === match.params.id)
-    const [product, setProduct] = useState({})
+//  match.params.id - для получения конкретного айди продукта при клике
+
+    const dispatch = useDispatch()
+
+    const productDetails = useSelector(state => state.productDetails)
+    const {product = {}, loading, error} = productDetails
+    console.log(productDetails);
 
     useEffect(() => {
         //делаем запрос, получаем промис, командой then делаем из него обьект
-        const fetchProduct = async() => {
-            const {data} = await axios.get(`/api/products/${match.params.id}`)
+        dispatch(listProductsDetails(match.params.id))
+    }, [dispatch, match])
 
-            //получакм обьект с ключем data изменяем стейт с помощью функции 
-            setProduct(data)
-        }
-
-        fetchProduct()
-    }, [match])
 
     return (
         <>
             <Link to='/' className="btn btn-light my-3">
                 Go back
             </Link>
-            <Row>
+            {/* отрисовывает компонент если прошла загрузка и не было ошибок */}
+            { loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : 
+            (<Row>
                 <Col md={6} >
                     {/* fluid чтоб картинка не выходила за свои границы конейнера */}
                     <Image src={product.image} alt={product.name}  fluid/>
@@ -85,8 +87,28 @@ const ProductScreen = ({match}) => {
                 </Col>
 
             </Row>
+            )}
         </>
     )
 }
 
 export default ProductScreen
+
+
+
+
+    //// находит и возвращает, если срабатывает условие
+    ////const product = products.find(p => p._id === match.params.id)
+    //const [product, setProduct] = useState({})
+
+    //useEffect(() => {
+    //    //делаем запрос, получаем промис, командой then делаем из него обьект
+    //    const fetchProduct = async() => {
+    //        const {data} = await axios.get(`/api/products/${match.params.id}`)
+
+    //        //получакм обьект с ключем data изменяем стейт с помощью функции 
+    //        setProduct(data)
+    //    }
+
+    //    fetchProduct()
+    //}, [match])
