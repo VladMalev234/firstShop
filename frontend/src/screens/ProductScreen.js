@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, {useState ,useEffect } from 'react'
 import  { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap'
+import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap'
 import Rating from '../components/Rating'
 import {listProductsDetails} from '../actions/productActions'
 import Message from '../components/Message'
@@ -9,19 +9,27 @@ import Loader from '../components/Loader'
 
 
 // экран где при клике на конкретный продукт будет отображаться страница с конкретно выбранный продукт
-const ProductScreen = ({match}) => {
 //  match.params.id - для получения конкретного айди продукта при клике
+const ProductScreen = ({history, match}) => {
+// для показа количества едениц товара
+    const [qty, setQty] = useState(1)
 
     const dispatch = useDispatch()
 
     const productDetails = useSelector(state => state.productDetails)
     const {product = {}, loading, error} = productDetails
-    console.log(productDetails);
+    //console.log(productDetails);
 
     useEffect(() => {
         //делаем запрос, получаем промис, командой then делаем из него обьект
         dispatch(listProductsDetails(match.params.id))
     }, [dispatch, match])
+
+//ФУНКЦИЯ ДОБАВЛЕНИЯ В КОРЗИНУ 
+    const addToCartHandler = () => {
+        //? парметры которые пушатся в истории переправляются
+        history.push(`/cart/${match.params.id}?qty=${qty}`)
+    }
 
 
     return (
@@ -76,9 +84,38 @@ const ProductScreen = ({match}) => {
                                 <Col>{product.countInStock > 0 ? "In Stock" : "Out of Stock"}</Col>
                             </Row>
                         </ListGroup.Item>
+                        {/* && - then  показывает если продуктов больше 0*/}
+                        {product.countInStock > 0 && (
+                            <ListGroup.Item >
+                                <Row>
+                                    <Col>Qty</Col>
+                                    <Col>
+                                        <Form.Control 
+                                        style={{padding: '5px 15px'}}
+                                        as="select" 
+                                        value={qty} 
+                                        onChange={(e) => setQty(e.target.value)} >
+                                            {/* для отображения количества */}
+                                            {
+                                                [...Array(product.countInStock).keys()].map((x) => (
+                                                    <option key={x + 1} value={ x + 1}   >
+                                                        { x + 1 }
+                                                    </option>
+                                                ))
+                                            }
+                                        </Form.Control>
+                                    </Col>
+                                </Row>
+                            </ListGroup.Item>
+                        ) }
+
 {/* Button disabled когда нет продуктов в магазине */}
                         <ListGroup.Item>
-                            <Button className="btn-block" type="button" disabled={product.countInStock === 0 }>
+                            <Button 
+                            onClick={addToCartHandler}
+                            className="btn-block" 
+                            type="button" 
+                            disabled={product.countInStock === 0 }>
                                 Add to Cart
                             </Button>
                         </ListGroup.Item>

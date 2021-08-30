@@ -9,7 +9,7 @@ import  {
 } from '../constants/productConstants'
 
 // для всинхронного запроса для отображения всех продуктов используем thunk
-// dispatch метод для создания действия в redux принимает в себя обьект, обязательно с типом
+// dispatch метод для создания действия в redux для изменения reducer принимает в себя обьект, обязательно с типом
 export const listProducts = () => async (dispatch) => {
     try {
         //вызывают reducer и возвращает
