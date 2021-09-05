@@ -4,6 +4,7 @@ const users = [
     {
          name: 'Admin User',
          email: 'admin@example.com',
+     //    для зашифровки пароля
          password: bcrypt.hashSync('123456', 10),
          isAdmin: true,
     },
