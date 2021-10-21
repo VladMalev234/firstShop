@@ -4,23 +4,46 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import {productListReducer, productDetailsReducer} from './reducers/productReducers'
 import {cartReducer} from './reducers/cartReducers'
+import { 
+    userLoginReducer, 
+    userRegisterReducer, 
+    userDetailsReducer, 
+    userUpdateProfileReducer, } from './reducers/userReducers'
 
 // постоянная в которую мы будем перелавать наши редьюсеры; preloadedState
 const reducer = combineReducers({
     productList: productListReducer,
     productDetails: productDetailsReducer,
     cart: cartReducer,
+    userLogin: userLoginReducer,
+    userRegister: userRegisterReducer,
+    userDetails: userDetailsReducer,
+    userUpdateProfile: userUpdateProfileReducer,
 })
 
-//  получаем из Storage обьявленого в cartAction
-const cartItemFromStorage = localStorage.getItem('cartItems') ? 
-JSON.parse(localStorage.getItem('cartItems')) 
-:[]
+//  получаем из Storage обьявленого в cartAction 
+// если данные в Storage есть, то мы их приводим к читаемому виду, если нет то получаем пустой массив
+    const cartItemFromStorage = localStorage.getItem('cartItems') ? 
+    JSON.parse(localStorage.getItem('cartItems')) 
+    :[]
 
-// для записи продуктов,  token, пользователей
+    //  получаем из Storage обьявленого в userAction проверяем есть ли такие данные
+    const userInfoFromStorage = localStorage.getItem('userInfo') ? 
+    JSON.parse(localStorage.getItem('userInfo')) 
+    :null
+
+    // при инициализации store если что-то есть в localStorage связаное с shippingAddress хотим добавлять это в стейт
+    const shippinAddressFromStorage = localStorage.getItem('shippingAddress') ? 
+    JSON.parse(localStorage.getItem('shippingAddress')) 
+    : {}
+
+// для записи продуктов,  token, пользователей, для предзагрузки
 const initialState = {
-    cart: {cartItems: cartItemFromStorage}
+    cart: {cartItems: cartItemFromStorage, shippingAddress: shippinAddressFromStorage },
+    userLogin: {userInfo: userInfoFromStorage},
+
 }
+
 //массив в который будут добавляться все midleware
 const midleware = [thunk]
 

@@ -8,7 +8,7 @@ import { addToCart, removeFromCart } from '../actions/cartActions'
 //КОРЗИНА продуктов, вызывается в App.js добавления идут с ProductScreen
 //location для получения qty - количекства продуктов и для получения queryString, history для редиректа
 const CartScreen = ({match, location, history}) => {
-    const productId= match.params.id
+    const productId = match.params.id
 //   разбивает строку на массив из 2 значений и берем под индексом один
     const qty = location.search ? Number(location.search.split('=')[1]) : 1
 
@@ -31,8 +31,8 @@ const CartScreen = ({match, location, history}) => {
     }
 //оформить заказ
     const checkoutHandler = () => {
-        //если человек не зарегистрирован его перекинет на регистрацию, если он заркгистрировался, перекиненет на доставку
-        history.push('/login?redirect=shippiing')
+        //если человек не зарегистрирован его перекинет на регистрацию, если он зарeгистрировался, перекиненет на доставку
+        history.push('/login?redirect=shipping')
     }
 
     return (

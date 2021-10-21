@@ -28,7 +28,7 @@ const authUser = asyncHandler(async (req, res) => {
     } else {
         // не авыторизованый
         res.status(401)
-        throw new Error('Invalid email or password')
+        throw new Error('Invalid email or password from authUser')
     }
 })
 
@@ -104,8 +104,44 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 
+// Измнять данные профиля зарегистрированых пользователей
+//@desc Update user profile
+//@route PUT api/users/profile
+//@axess Private
+const updateUserProfile = asyncHandler(async (req, res) => {
+    //получаем получаем пользователя
+    const user = await User.findById(req.user._id)
+// если пользователь есть
+    if (user) {
+        //заменяет имя пользователя на имя полученное из тела запроса или оставляет его тем же если не изменилось
+        user.name = req.body.name || user.name
+        user.email = req.body.email || user.email
+        //проверяем отправлен ли был пароль в теле
+        if(req.body.password) {
+            user.password = req.body.password
+        }
+
+        const updateUser = await user.save()
+
+        res.json({
+            _id: updateUser._id,
+            name: updateUser.name,
+            email: updateUser.email,
+            isAdmin: updateUser.isAdmin,
+            token: generateToken(updateUser._id),
+        })
+    } else {
+        //user not found 
+        res.status(404)
+        throw new Error ('User not found')
+    }
+})
+
+
+
 export  {
     authUser,
     getUserProfile,
-    registerUser
+    registerUser,
+    updateUserProfile
 }

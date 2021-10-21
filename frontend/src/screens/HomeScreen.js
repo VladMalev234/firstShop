@@ -17,7 +17,7 @@ const HomeScreen = () => {
     const productList = useSelector( (state) => state.productList )
 
     // деструктуризируем данные по название полей в reducer
-    const { loading, error, products = []} = productList
+    const { loading, error, products } = productList
 
     //console.log(`Error: ${error}`);
     //console.log(`LOAding: ${loading}`);
@@ -41,8 +41,7 @@ const HomeScreen = () => {
                         <Col key={product._id} sm="12" md={6} lg={4} xl={3}> 
                             <Product product={product} />
                         </Col>
-                    )
-                    )}
+                    ))}
                 </Row>
             }
         </>

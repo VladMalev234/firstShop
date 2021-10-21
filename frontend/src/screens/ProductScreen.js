@@ -21,13 +21,12 @@ const ProductScreen = ({history, match}) => {
     //console.log(productDetails);
 
     useEffect(() => {
-        //делаем запрос, получаем промис, командой then делаем из него обьект
         dispatch(listProductsDetails(match.params.id))
     }, [dispatch, match])
 
 //ФУНКЦИЯ ДОБАВЛЕНИЯ В КОРЗИНУ 
     const addToCartHandler = () => {
-        //? парметры которые пушатся в истории переправляются
+        //? парметры которые пушатся в истории переправляются переадресация 
         history.push(`/cart/${match.params.id}?qty=${qty}`)
     }
 

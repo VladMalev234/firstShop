@@ -33,10 +33,10 @@ userSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)
 }
 
-//encrypt password  pre('') - пердварительное выполнее, чтоб функция выполнядась одна за другой
+//encrypt password  pre('') - предварительное выполнее, чтоб функция выполнядась одна за другой
 // До сохранения хотим выполнить функцию
 userSchema.pre('save', async function (next) {
-    //мы хотим хешировать пароль только при заполненом поле ввода пароля или если его изменили
+    //мы хотим хешировать пароль только при заполненом поля ввода пароля или если его изменили
     if(!this.isModified('password')) {
         next()
     }
