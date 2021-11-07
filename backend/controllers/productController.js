@@ -5,7 +5,7 @@ import Product  from '../models/productModel.js'
 
 
 //@desc Fetch all Prosucts
-//@route GET api/products
+//@route GET /api/products
 //@axess Public
 //для всех продуктов
 const getProducts = asyncHandler(async (req, res) => {
@@ -21,7 +21,7 @@ const getProducts = asyncHandler(async (req, res) => {
 
 
 //@desc Fetch single product
-//@route GET api/products/:id
+//@route GET /api/products/:id
 //@axess Public
 const getProductById = asyncHandler(async (req, res) => {
 //получаем один продукт из модели продуктов по айди

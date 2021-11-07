@@ -5,7 +5,11 @@ import { USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_LOG
     USER_REGISTER_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
     USER_UPDATE_PROFILE_REQUEST,
-    USER_UPDATE_PROFILE_SUCCESS} from "../constants/userConstants"
+    USER_UPDATE_PROFILE_SUCCESS,
+    USER_DETAILS_RESET,
+} from "../constants/userConstants"
+
+import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
 
 //request for login and getting token для входа
 export const login = (email, password) => async (dispatch) => {
@@ -48,6 +52,12 @@ export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo')
     dispatch({
         type: USER_LOGOUT,
+    })
+    dispatch({
+        type: USER_DETAILS_RESET,
+    })
+    dispatch({
+        type: ORDER_LIST_MY_RESET,
     })
 }
 
@@ -142,7 +152,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
         })
 
 //двойная деструктуризация, получаем userLogin из getState а потом userInfo из userLogin, доступ к авторизованым пользователям
-        const {userLogin : {userInfo}} = getState()
+        const {userLogin : {userInfo},} = getState()
 
         //обьект который мы передаем при запросе как headers
         const config = {
@@ -153,7 +163,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
             },
         }
 // вернет обьект с полем дата, по этому используем деструктуризацию
-// делаем реквест для получения данных //1 - адрес, 2 - тело с параметрами с инпутов, 3 - headers, заголовок
+// делаем реквест для изменения данных //1 - адрес, 2 - тело с параметрами с инпутов, 3 - headers, заголовок
         const {data} = await axios.put(`/api/users/profile`, user, config)
         // делаем реквест для получения данных
 

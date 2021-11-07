@@ -11,7 +11,8 @@ import {
     USER_DETAILS_FAIL,
     USER_UPDATE_PROFILE_REQUEST,
     USER_UPDATE_PROFILE_SUCCESS,
-    USER_UPDATE_PROFILE_FAIL
+    USER_UPDATE_PROFILE_FAIL,
+    USER_DETAILS_RESET
 
 } from '../constants/userConstants'
 
@@ -94,6 +95,8 @@ export const userDetailsReducer = (state = {user: {}}, action) => {
                 loading: false,
                 error: action.payload
             }   
+        case USER_DETAILS_RESET: 
+            return { user: {}}    
         default: 
          return state 
     }
@@ -101,7 +104,7 @@ export const userDetailsReducer = (state = {user: {}}, action) => {
 
 
 // для вывода данных пользователя в профиле 
-export const userUpdateProfileReducer = (state = { }, action) => {
+export const userUpdateProfileReducer = (state = { user:  {}}, action) => {
 
     switch(action.type) {
         //при запросе на сервер

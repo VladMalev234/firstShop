@@ -9,6 +9,12 @@ import {
     userRegisterReducer, 
     userDetailsReducer, 
     userUpdateProfileReducer, } from './reducers/userReducers'
+import { 
+    orderCreateReducer, 
+    orderDetailsReducer,
+    orderPayReducer,
+    orderListMyReducer,
+ } from './reducers/orderReducers'
 
 // постоянная в которую мы будем перелавать наши редьюсеры; preloadedState
 const reducer = combineReducers({
@@ -19,6 +25,10 @@ const reducer = combineReducers({
     userRegister: userRegisterReducer,
     userDetails: userDetailsReducer,
     userUpdateProfile: userUpdateProfileReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
 })
 
 //  получаем из Storage обьявленого в cartAction 
@@ -41,7 +51,6 @@ const reducer = combineReducers({
 const initialState = {
     cart: {cartItems: cartItemFromStorage, shippingAddress: shippinAddressFromStorage },
     userLogin: {userInfo: userInfoFromStorage},
-
 }
 
 //массив в который будут добавляться все midleware
