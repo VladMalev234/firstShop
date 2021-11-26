@@ -121,14 +121,14 @@ const updateUserProfile = asyncHandler(async (req, res) => {
             user.password = req.body.password
         }
 
-        const updateUser = await user.save()
+        const updatedUser = await user.save()
 
         res.json({
-            _id: updateUser._id,
-            name: updateUser.name,
-            email: updateUser.email,
-            isAdmin: updateUser.isAdmin,
-            token: generateToken(updateUser._id),
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin,
+            token: generateToken(updatedUser._id),
         })
     } else {
         //user not found 
@@ -139,9 +139,88 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 
 
+
+// получать все профили зарегистрированых пользователей для странички админа
+//@desc Get all users 
+//@route GET /api/users
+//@axess Private/Admin
+const getUsers = asyncHandler(async (req, res) => {
+    //получаем получаем пользователя
+    const users = await User.find({})
+    res.json(users) 
+})
+
+// удаляет выбраного пользователя
+//@desc Delete user
+//@route DELETE /api/users:id
+//@axess Private/Admin
+const deleteUser = asyncHandler(async (req, res) => {
+    //получаем получаем пользователя
+    const user = await User.findById(req.params.id)
+    //проверка есть ли пользователь
+    if(user) {
+        await user.remove()
+        res.json({message: 'User removed'})
+    } else {
+        res.status(404)
+        throw new Error ('User not found')
+    }
+})
+
+
+// получать данные про пользователя чтоб их потом изменить
+//@desc Get user by ID
+//@route GET /api/users/:id
+//@axess Private/Admin
+const getUserById = asyncHandler(async (req, res) => {
+    //получаем данные пользователя кроме пароля
+    const user = await User.findById(req.params.id).select('-password')
+    if(user) {
+        res.json(user) 
+    } else {
+        res.status(404)
+        throw new Error ('User not found')
+    }
+})
+
+
+// Измнять данные профиля пользователя админом
+//@desc Update user 
+//@route PUT api/users/:id
+//@axess Private/Admin
+const updateUser = asyncHandler(async (req, res) => {
+    //получаем получаем пользователя
+    const user = await User.findById(req.params.id)
+// если пользователь есть
+    if (user) {
+        //заменяет имя пользователя на имя полученное из тела запроса или оставляет его тем же если не изменилось
+        user.name = req.body.name || user.name
+        user.email = req.body.email || user.email
+        user.isAdmin = req.body.isAdmin 
+
+        const updatedUser = await user.save()
+
+        res.json({
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin
+        })
+    } else {
+        //user not found 
+        res.status(404)
+        throw new Error ('User not found')
+    }
+})
+
+
 export  {
     authUser,
     getUserProfile,
     registerUser,
-    updateUserProfile
+    updateUserProfile,
+    getUsers,
+    deleteUser,
+    getUserById,
+    updateUser
 }

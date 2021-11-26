@@ -1,3 +1,4 @@
+import path from 'path'
 // записываем в переменную импорт express
  import express from 'express'
  import dotenv from  'dotenv'
@@ -7,6 +8,8 @@
  import productRoutes from './routes/productRoutes.js'
  import userRoutes from './routes/userRoutes.js'
  import orderRoutes from './routes/orderRoutes.js'
+ import uploadRoutes from './routes/uploadRoutes.js'
+
 
 
 // запуск сервера
@@ -35,12 +38,16 @@ connectDB()
 
  app.use('/api/orders', orderRoutes)
 
+ app.use('/api/upload', uploadRoutes) 
+
+
 //роут для получения оплаты товаров
  app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
 
 
-
-
+//make folder static чтоб загружалась в браузере 'upload
+const __dirname = path.resolve()
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
 //404 error
 app.use(notFound) 
