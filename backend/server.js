@@ -2,6 +2,7 @@ import path from 'path'
 // записываем в переменную импорт express
  import express from 'express'
  import dotenv from  'dotenv'
+ import morgan from 'morgan'
  import { notFound, errorHandler } from './middleware/errorMidleware.js'
  import connectDB from './config/db.js'
 // роуты для получения или отправки данных на сервер
@@ -20,6 +21,12 @@ connectDB()
 
 //в app записываем вызов express
  const app = express()
+
+
+ //добавляем морган для отслеживаия пльзователей, когда они регистрируються или переходять по путям
+if(process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'))
+}
 
 // для получения даних в json формате в body при POST request
  app.use(express.json())
@@ -53,12 +60,13 @@ app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 app.use(notFound) 
 
 //error middleware function
- app.use(errorHandler)
+app.use(errorHandler)
 
 // записывает в константу порт который берет из файла .env
  const PORT = process.env.PORT || 5000
 // app слушай порт 5000
- app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`))
+ app.listen(PORT,
+     console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`))
 
 
  ////midewarre for custom error срабатывает при запросе

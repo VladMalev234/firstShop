@@ -1,8 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+//import PropTypes from 'prop-types'
 
 //Рейтинг продукта в звездах, color - цвет который установлен по дефолту в этом же компоненте
-const Rating = ({value, text, color}) => {
+const Rating = ({ value, text, color }) => {
     return (
         <div className='rating' >
             <span>
@@ -72,11 +72,10 @@ Rating.defaultProps = {
     color: '#f8e825'
 }
 // проверка типов обязательно указаный тип
- Rating.propTypes = {
-     value: PropTypes.number.isRequired,
-     text: PropTypes.string.isRequired,
-     color: PropTypes.string
-
- }
+// Rating.propTypes = {
+//     value: PropTypes.number.isRequired,
+//     text: PropTypes.string.isRequired,
+//     color: PropTypes.string
+// }
 
 export default Rating

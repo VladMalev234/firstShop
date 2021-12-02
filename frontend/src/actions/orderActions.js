@@ -11,7 +11,13 @@ import {
     ORDER_PAY_REQUEST,
     ORDER_LIST_MY_REQUEST,
     ORDER_LIST_MY_FAIL,
-    ORDER_LIST_MY_SUCCESS} from "../constants/orderConstants";
+    ORDER_LIST_MY_SUCCESS,
+    ORDER_LIST_REQUEST,
+    ORDER_LIST_SUCCESS,
+    ORDER_LIST_FAIL,
+    ORDER_DELIVER_REQUEST,
+    ORDER_DELIVER_SUCCESS,
+    ORDER_DELIVER_FAIL} from "../constants/orderConstants";
 
 
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -161,3 +167,73 @@ export const listMyOrders = () => async (dispatch, getState) => {
             })
         }
 } 
+
+
+export const listOrders = () => async (dispatch, getState) => {
+
+    try {
+        dispatch({
+            type: ORDER_LIST_REQUEST,
+        })
+
+        const {userLogin: {userInfo},} = getState()
+
+        const config = {
+            // место где мы отправим token для защищенных маршрутов адреса
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+
+        const {data} = await axios.get('/api/orders', config)
+
+        dispatch({
+            type: ORDER_LIST_SUCCESS,
+            payload: data,
+        })
+    } catch (error) {
+        dispatch({
+            type: ORDER_LIST_FAIL,
+            payload: error.response && error.response.data.message ? error.response.data.message 
+            : error.message
+        })
+    }
+
+}
+
+
+//для добавления того что товар оплачен
+export const deliverOrder = (order) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: ORDER_DELIVER_REQUEST,
+        })
+
+//двойная деструктуризация, получаем userLogin из getState а потом userInfo из userLogin, доступ к авторизованым пользователям
+        const {userLogin : {userInfo},} = getState()
+
+        //обьект который мы передаем при запросе как headers
+        const config = {
+            // место где мы отправим token для защищенных маршрутов адреса
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+// вернет обьект с полем дата, по этому используем деструктуризацию
+// делаем реквест для добавления данных //1 - адрес, 2 - тело с параметрами с инпутов, 3 - headers, заголовок
+        const {data} = await axios.put(`/api/orders/${order._id}/deliver`, {},  config)
+        // делаем реквест для получения данных
+
+        //диспатчим полученные данныйе в редусер в data получакм обьект с функции userController с backend 
+        dispatch({
+            type: ORDER_DELIVER_SUCCESS,
+            payload: data,
+        })
+    } catch (error) {
+            dispatch({
+                type: ORDER_DELIVER_FAIL,
+                payload: error.response && error.response.data.message ? error.response.data.message 
+                : error.message
+            })
+        }
+}

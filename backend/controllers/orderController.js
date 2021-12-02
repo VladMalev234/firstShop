@@ -94,7 +94,32 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 })
 
 
-//@desc Get logged in user order
+//@desc Update order to delivered
+//@route GET /api/orders/:id/deliver
+//@axess Private/Admin
+//для всех продуктов
+const updateOrderToDelivered = asyncHandler(async (req, res) => {
+    //хотим фетчить заказы с базы данных и получать user email и  user name
+    const order = await Order.findById(req.params.id)
+    
+    //если ордер есть 
+    if(order) {
+        order.isDelivered = true
+        order.deliveredAt = Date.now()
+        
+// для сохранения измененых параметров в баззу
+        const updatedOrder = await order.save()
+//отправляем обратно изменненый order
+        res.json(updatedOrder)
+    } else {
+        res.status(404)
+        throw new Error('Order not found (in orderControllers)')
+    }
+
+})
+
+
+//@desc Get logged in user orders
 //@route GET /api/orders/my orders
 //@axess Private
 //для всех продуктов
@@ -107,4 +132,25 @@ const getMyOrders = asyncHandler(async (req, res) => {
 })
 
 
-export {addOrderItems, getOrderById, updateOrderToPaid, getMyOrders}
+
+//@desc Get all orders
+//@route GET /api/orders
+//@axess Private/Admon
+//для всех продуктов
+const getOrders = asyncHandler(async (req, res) => {
+    //хотим фетчить все заказы с базы данных только и так же получать id name с поля user
+    const orders = await Order.find({}).populate('user', 'id name')
+    res.json(orders)
+
+
+})
+
+
+
+export {addOrderItems, 
+    getOrderById, 
+    updateOrderToPaid, 
+    updateOrderToDelivered,
+    getMyOrders, 
+    getOrders, 
+ }

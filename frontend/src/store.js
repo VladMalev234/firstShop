@@ -7,6 +7,7 @@ import {productListReducer,
         productDeleteReducer,
         productCreateReducer,
         productUpdateReducer,
+        productReviewCreateReducer,
     } from './reducers/productReducers'
 import {cartReducer} from './reducers/cartReducers'
 import { 
@@ -22,7 +23,9 @@ import {
     orderCreateReducer, 
     orderDetailsReducer,
     orderPayReducer,
+    orderDeliverReducer,
     orderListMyReducer,
+    orderListReducer,
  } from './reducers/orderReducers'
 
 // постоянная в которую мы будем перелавать наши редьюсеры; preloadedState
@@ -32,6 +35,7 @@ const reducer = combineReducers({
     productDelete: productDeleteReducer,
     productCreate: productCreateReducer,
     productUpdate: productUpdateReducer,
+    productReviewCreate: productReviewCreateReducer,
 
 
     cart: cartReducer,
@@ -47,7 +51,9 @@ const reducer = combineReducers({
     orderCreate: orderCreateReducer,
     orderDetails: orderDetailsReducer,
     orderPay: orderPayReducer,
+    orderDeliver: orderDeliverReducer,
     orderListMy: orderListMyReducer,
+    orderList: orderListReducer,
 
 })
 

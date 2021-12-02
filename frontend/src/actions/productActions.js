@@ -14,7 +14,10 @@ import  {
     PRODUCT_CREATE_FAIL,
     PRODUCT_UPDATE_REQUEST,
     PRODUCT_UPDATE_SUCCESS,
-    PRODUCT_UPDATE_FAIL
+    PRODUCT_UPDATE_FAIL,
+    PRODUCT_CREATE_REVIEW_REQUEST,
+    PRODUCT_CREATE_REVIEW_SUCCESS,
+    PRODUCT_CREATE_REVIEW_FAIL
 } from '../constants/productConstants'
 
 // для aсинхронного запроса для отображения всех продуктов используем thunk
@@ -108,7 +111,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
 
 
 
-//для создания нового продукта продукта из странички по айди
+//для изменения данных продукта из странички по айди
 export const createProduct = () => async (dispatch, getState) => {
     try {
         dispatch({
@@ -143,8 +146,7 @@ export const createProduct = () => async (dispatch, getState) => {
         }
 } 
 
-
-//для создания нового продукта продукта из странички по айди
+//для добавления отзыва о продукте из странички по айди
 export const updateProduct = (product) => async (dispatch, getState) => {
     try {
         dispatch({
@@ -169,11 +171,48 @@ export const updateProduct = (product) => async (dispatch, getState) => {
         //диспатчим полученные данныйе в редусер в data получакм обьект с функции userController с backend 
         dispatch({
             type: PRODUCT_UPDATE_SUCCESS,
-            payload: data
+            payload: data,
         })
+        dispatch({type: PRODUCT_DETAILS_SUCCESS, payload: data,})
     } catch (error) {
             dispatch({
                 type: PRODUCT_UPDATE_FAIL,
+                payload: error.response && error.response.data.message ? error.response.data.message 
+                : error.message
+            })
+        }
+} 
+
+
+//для добавления отзыва о продукте из странички по айди
+export const createProductReview = (productId, review) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PRODUCT_CREATE_REVIEW_REQUEST,
+        })
+
+//двойная деструктуризация, получаем userLogin из getState а потом userInfo из userLogin, доступ к авторизованым пользователям
+        const {userLogin : {userInfo},} = getState()
+
+        //обьект который мы передаем при запросе как headers
+        const config = {
+            // место где мы отправим token для защищенных маршрутов адреса
+            headers: {
+                'Content-Type':'application/json',
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        }
+// вернет обьект с полем дата, по этому используем деструктуризацию
+        await axios.post(`/api/products/${productId}/reviews`, review, config)
+        // делаем реквест для получения данных
+
+        //диспатчим полученные данныйе в редусер в data получакм обьект с функции userController с backend 
+        dispatch({
+            type: PRODUCT_CREATE_REVIEW_SUCCESS,
+        })
+    } catch (error) {
+            dispatch({
+                type: PRODUCT_CREATE_REVIEW_FAIL,
                 payload: error.response && error.response.data.message ? error.response.data.message 
                 : error.message
             })
