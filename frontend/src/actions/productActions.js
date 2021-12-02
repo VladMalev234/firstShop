@@ -22,13 +22,13 @@ import  {
 
 // для aсинхронного запроса для отображения всех продуктов используем thunk
 // dispatch метод для создания действия в redux для изменения reducer принимает в себя обьект, обязательно с типом
-export const listProducts = () => async (dispatch) => {
+export const listProducts = (keyword = '') => async (dispatch) => {
     try {
         //вызывают reducer и возвращает
         dispatch({type: PRODUCT_LIST_REQUEST})
 
         //делаем реквест
-        const { data } = await axios.get('/api/products')
+        const { data } = await axios.get(`/api/products?keyword=${keyword}`)
 
         //вызываем reducer успешного реквеста передаем тип и данные
         dispatch({

@@ -8,7 +8,10 @@ import Message from '../components/Message'
 import { listProducts } from '../actions/productActions'
 
 // 1 экран сайта с продуктами
-const HomeScreen = () => {
+const HomeScreen = ({match}) => {
+    const keyword = match.params.keyword
+
+
     // хук для сооденения компонента с actions
     const dispatch = useDispatch()
  
@@ -28,8 +31,8 @@ const HomeScreen = () => {
     useEffect(() =>{
         //получает данные из сервера
         //1выполняем функцию !actions, которая в свою очередь передает полученные данные в reducer как обьект продуктов
-        dispatch(listProducts())
-    },[dispatch])
+        dispatch(listProducts(keyword))
+    },[dispatch, keyword])
 
     return (
         <>

@@ -10,8 +10,16 @@ import Product  from '../models/productModel.js'
 //для всех продуктов
 const getProducts = asyncHandler(async (req, res) => {
 
+    //хотим проверять сопадает ли родукт с ключевым словом поиска, если да то выводить на страницу только этот продукт
+    //query - question mark
+    const keyword= req.query.keyword ? {
+        name:{
+            $regex : req.query.keyword,
+            $options: 'i'
+        }
+    } : {}
      // для получения всез продуктов с модели продуктов
-     const products = await Product.find({})
+     const products = await Product.find({ ...keyword})
     
      // для конвертации в джейсон формат
      res.json(products)
