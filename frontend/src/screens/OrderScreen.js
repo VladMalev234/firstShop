@@ -70,7 +70,7 @@ const OrderScreen = ({match, history}) => {
            document.body.appendChild(script)
        }
 //если тут нет заказа или он  оплачен
-       if(!order || successPay || successDeliver) {
+       if(!order || successPay || successDeliver || order._id !== orderId) {
         //   для того чтоб скинуть state и загрузить его заново
         dispatch({type: ORDER_PAY_RESET})
         dispatch({type: ORDER_DELIVER_RESET})

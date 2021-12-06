@@ -17,18 +17,21 @@ import  {
     PRODUCT_UPDATE_FAIL,
     PRODUCT_CREATE_REVIEW_REQUEST,
     PRODUCT_CREATE_REVIEW_SUCCESS,
-    PRODUCT_CREATE_REVIEW_FAIL
+    PRODUCT_CREATE_REVIEW_FAIL,
+    PRODUCT_TOP_FAIL,
+    PRODUCT_TOP_SUCCESS,
+    PRODUCT_TOP_REQUEST
 } from '../constants/productConstants'
 
 // для aсинхронного запроса для отображения всех продуктов используем thunk
 // dispatch метод для создания действия в redux для изменения reducer принимает в себя обьект, обязательно с типом
-export const listProducts = (keyword = '') => async (dispatch) => {
+export const listProducts = (keyword = '', pageNumber = '') => async (dispatch) => {
     try {
         //вызывают reducer и возвращает
         dispatch({type: PRODUCT_LIST_REQUEST})
 
-        //делаем реквест
-        const { data } = await axios.get(`/api/products?keyword=${keyword}`)
+        //делаем реквест ?keyword - query string, & - если больше одной query string
+        const { data } = await axios.get(`/api/products?keyword=${keyword}&pageNumber=${pageNumber}`)
 
         //вызываем reducer успешного реквеста передаем тип и данные
         dispatch({
@@ -218,3 +221,33 @@ export const createProductReview = (productId, review) => async (dispatch, getSt
             })
         }
 } 
+
+
+export const listTopProducts = () => async (dispatch) => {
+    try {
+        //вызывают reducer и возвращает
+        dispatch({type: PRODUCT_TOP_REQUEST})
+
+        //делаем реквест 
+        const { data } = await axios.get(`/api/products/top`)
+        
+
+        //вызываем reducer успешного реквеста передаем тип и данные
+        dispatch({
+            type: PRODUCT_TOP_SUCCESS,
+            payload: data
+        })
+    } catch (error) {
+        //если реквест не удался
+        // хотим отобраить ошибку так как она отобажается на backend, проверяем если то и то правда, то возвращаем 1, а если нет, то 2
+        dispatch({
+            type: PRODUCT_TOP_FAIL,
+            payload: error.response && error.response.data.message ? error.response.data.message 
+            : error.message
+        })
+    }
+}
+
+
+
+

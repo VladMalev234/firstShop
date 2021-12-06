@@ -10,19 +10,30 @@ import Product  from '../models/productModel.js'
 //для всех продуктов
 const getProducts = asyncHandler(async (req, res) => {
 
+    //функционал для разбива на страницы
+    //сколько продуктов на странице будет
+    const pageSize = 10
+    //какую страницу отображать
+    const page = Number(req.query.pageNumber) || 1
+
     //хотим проверять сопадает ли родукт с ключевым словом поиска, если да то выводить на страницу только этот продукт
     //query - question mark
-    const keyword= req.query.keyword ? {
+    const keyword = req.query.keyword ? {
         name:{
             $regex : req.query.keyword,
             $options: 'i'
         }
     } : {}
-     // для получения всез продуктов с модели продуктов
-     const products = await Product.find({ ...keyword})
+
+
+    //суммарное значения продуктов
+    const count = await Product.countDocuments({...keyword})
+     // для получения всез продуктов с модели продуктов limit - чтоб ограничивать количество выдимых продуктов
+    // skip - чтоб получить правильное количество продуктов и правильное место размещения (страницу)
+     const products = await Product.find({ ...keyword}).limit(pageSize).skip(pageSize * (page - 1))
     
-     // для конвертации в джейсон формат
-     res.json(products)
+     // для конвертации в джейсон формат pages - колчество страниц = количество продуктов поделено на
+    res.json({products, page, pages : Math.ceil(count / pageSize) })
 
 })
 
@@ -125,7 +136,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
 
 //@desc Create new review
-//@route POST /api/products:id/reviews
+//@route POST /api/products/:id/reviews
 //@axess Private
 const createProductReview = asyncHandler(async (req, res) => {
     const {
@@ -171,6 +182,17 @@ const createProductReview = asyncHandler(async (req, res) => {
     } 
 })
 
+
+//@desc Get top rated products
+//@route GET /api/products/top
+//@axess Public
+const getTopProducts = asyncHandler(async (req, res) => {
+    //сортирует продукт по rating limit(3)
+    const products = await Product.find({}).sort({ rating: -1 }).limit(3)
+
+  res.json(products)
+})
+
 export {
     getProductById, 
     getProducts,
@@ -178,4 +200,5 @@ export {
     createProduct,
     updateProduct,
     createProductReview,
+    getTopProducts,
 }

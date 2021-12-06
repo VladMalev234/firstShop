@@ -18,7 +18,10 @@ import { PRODUCT_LIST_REQUEST,
          PRODUCT_CREATE_REVIEW_REQUEST,
          PRODUCT_CREATE_REVIEW_SUCCESS,
          PRODUCT_CREATE_REVIEW_FAIL,
-         PRODUCT_CREATE_REVIEW_RESET
+         PRODUCT_CREATE_REVIEW_RESET,
+         PRODUCT_TOP_REQUEST,
+         PRODUCT_TOP_SUCCESS,
+         PRODUCT_TOP_FAIL,
         } from '../constants/productConstants'
 
 
@@ -35,7 +38,9 @@ export const productListReducer = (state = { products: [] }, action) => {
         case PRODUCT_LIST_SUCCESS: 
             return {
                 loading: false,
-                products: action.payload,
+                products: action.payload.products,
+                pages: action.payload.pages,
+                page: action.payload.page,
             }
             // при ошибке
         case PRODUCT_LIST_FAIL: 
@@ -180,6 +185,33 @@ export const productReviewCreateReducer = (state = {}, action) => {
             }
         case PRODUCT_CREATE_REVIEW_RESET: 
             return {}
+        default:  return state 
+    }
+}
+
+
+
+// для ролучения продуктов по рейтингу 
+export const productTopRatedReducer = (state = { products: [] }, action) => {
+    switch(action.type) {
+        //при запросе на сервер, будем добавлять все в текущее  состояние
+        case PRODUCT_TOP_REQUEST:
+            return {
+                loading: true,
+                products: [],
+            } 
+        //при успешном запросе
+        case PRODUCT_TOP_SUCCESS: 
+            return {
+                loading: false,
+                products: action.payload
+            }
+            // при ошибке
+        case PRODUCT_TOP_FAIL: 
+            return {
+                loading: false,
+                error: action.payload
+            }
         default:  return state 
     }
 }

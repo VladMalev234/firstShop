@@ -5,6 +5,7 @@ import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap'
 import Rating from '../components/Rating'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import Meta from '../components/Meta'
 import {listProductsDetails, createProductReview} from '../actions/productActions'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
 
@@ -27,17 +28,19 @@ const ProductScreen = ({history, match}) => {
     const {userInfo} = userLogin
 
     const productReviewCreate = useSelector(state => state.productReviewCreate)
-    const { error: errorProductReview, success: successProductReview} = productReviewCreate
+    const { error: errorProductReview, success: successProductReview, loading: loadingProductReview} = productReviewCreate
 
     useEffect(() => {
         if(successProductReview) {
-            alert('Review Submitted')
+            //alert('Review Submitted')
             setRating(0)
             setComment('')
+        }
+        if(!product._id || product._id !== match.params.id) {
+            dispatch(listProductsDetails(match.params.id))
             dispatch({type: PRODUCT_CREATE_REVIEW_RESET})
         }
-        dispatch(listProductsDetails(match.params.id))
-    }, [successProductReview, dispatch, match])
+    }, [successProductReview, dispatch, match, product])
 
 //ФУНКЦИЯ ДОБАВЛЕНИЯ В КОРЗИНУ 
     const addToCartHandler = () => {
@@ -59,7 +62,8 @@ const ProductScreen = ({history, match}) => {
             {/* отрисовывает компонент если прошла загрузка и не было ошибок */}
             { loading ? <Loader /> : error ? <Message variant="danger">{error}</Message> 
             : (
-             <>   
+             <> 
+            <Meta title={`${product.name}`} />
             <Row>
                 <Col md={6} >
                     {/* fluid чтоб картинка не выходила за свои границы конейнера */}
@@ -164,6 +168,8 @@ const ProductScreen = ({history, match}) => {
 
                         <ListGroup.Item>
                             <h2>Write a Customer Review</h2>
+                            {successProductReview  && <Message variant='success'>Review submitted successfully</Message>}
+                            {loadingProductReview && <Loader />}
                             {errorProductReview && <Message variant='danger'>{errorProductReview}</Message>}
                             {userInfo ? (
                                <Form onSubmit={submitHandler}>
@@ -188,7 +194,7 @@ const ProductScreen = ({history, match}) => {
                                        onChange={e => setComment(e.target.value)}></Form.Control>
                                    </Form.Group>
 
-                                   <Button type='submit' variant='primary'>Submit</Button>
+                                   <Button disabled={loadingProductReview} type='submit' variant='primary'>Submit</Button>
                                </Form>
                                
                             ) : <Message>Please <Link to='/login'>sign in</Link> to write a review</Message>}

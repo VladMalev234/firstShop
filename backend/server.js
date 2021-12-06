@@ -32,11 +32,11 @@ if(process.env.NODE_ENV === 'development') {
  app.use(express.json())
 
 
-// при get запросе
- app.get('/', (req, res) => {
-    // при ответе из сервера чтоб клиент получал сообщение
-     res.send('API is running...')
- })
+//// при get запросе
+// app.get('/', (req, res) => {
+//    // при ответе из сервера чтоб клиент получал сообщение
+//     res.send('API is running...')
+// })
 
 //сылка на productRoutes
  app.use('/api/products', productRoutes)
@@ -51,10 +51,25 @@ if(process.env.NODE_ENV === 'development') {
 //роут для получения оплаты товаров
  app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
 
-
 //make folder static чтоб загружалась в браузере 'upload
+//для зпгрузки картинок при изменении данных о продукте
 const __dirname = path.resolve()
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+
+
+if(process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '/frontend/build')))
+
+
+    app.get('*', (req, respnse) => res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html')))
+} else {
+    // при get запросе
+ app.get('/', (req, res) => {
+    // при ответе из сервера чтоб клиент получал сообщение
+     res.send('API is running...')
+ })
+}
+
 
 //404 error
 app.use(notFound) 
