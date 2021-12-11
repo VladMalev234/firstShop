@@ -54,9 +54,9 @@ export const productListReducer = (state = { products: [] }, action) => {
 
 
 //Reducer для продукта выступает как стейт, action - то что мы диспатчим, revies - отзывы которые мы будем передавать
-export const productDetailsReducer = (state = { product: { reviews: [] } }, action) => {
+export const productDetailsReducer = (state = { product: { reviews:[] } }, action) => {
     switch(action.type) {
-        //при запросе на сервер, будем добавлять все в текущее  состояние
+        //при запросе на сервер, будем добавлять все в текущее состояние
         case PRODUCT_DETAILS_REQUEST :
             return {
                 ...state,
@@ -100,7 +100,7 @@ export const productDeleteReducer = (state = {}, action) => {
                 loading: false,
                 error: action.payload
             }
-        default:  return  state 
+        default:  return state 
     }
 }
 

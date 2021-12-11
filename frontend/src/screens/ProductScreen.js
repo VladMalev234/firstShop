@@ -22,7 +22,7 @@ const ProductScreen = ({history, match}) => {
     const dispatch = useDispatch()
 
     const productDetails = useSelector(state => state.productDetails)
-    const {product, loading, error} = productDetails
+    const { loading, error, product} = productDetails
 
     const userLogin = useSelector(state => state.userLogin)
     const {userInfo} = userLogin
@@ -153,14 +153,15 @@ const ProductScreen = ({history, match}) => {
             <Row>
                 <Col md={6}>
                     <h2>Reviews</h2>
-                    {product.reviews.lenght === 0 && <Message>No Reviews</Message>}
+                    {product.reviews.length === 0 && <Message>No Reviews</Message>}
                     <ListGroup variant='flush'>
                         {product.reviews.map(review => (
                             <ListGroup.Item key={review._id}>
                                 <strong>
                                     {review.name}
                                 </strong>
-                                <Rating value={review.rating} />
+                                <Rating value={review.rating}
+                                 />
                                 <p>{review.createdAt.substring(0,10)}</p>
                                 <p>{review.comment}</p>
                             </ListGroup.Item>

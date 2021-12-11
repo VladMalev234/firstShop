@@ -6,7 +6,7 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import { getUserDetails, updateUserProfile } from '../actions/userActions'
 import { listMyOrders } from '../actions/orderActions'
-
+import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 //Профиль пользователя 
 // useState - поля формы будут частью State
 const ProfileScreen = ({ history }) => {
@@ -41,7 +41,8 @@ const ProfileScreen = ({ history }) => {
             history.push('/login')
         } else  {
             //проверяем пользователя который пришел из стейта, если нет 
-            if(!user.name) {
+            if(!user || !user.name || success) {
+                dispatch({type: USER_UPDATE_PROFILE_RESET})
                 //если пользователь не зарегистрирован перекидуем на страницу профиля
                 dispatch(getUserDetails('profile'))
                 dispatch(listMyOrders())
@@ -52,7 +53,7 @@ const ProfileScreen = ({ history }) => {
             }
         }
         //зависимости для тогоо чтоб обновлялся при изменении одной из них
-    }, [dispatch, history, userInfo, user])
+    }, [dispatch, history, userInfo, user, success])
 
     //console.log(redirect);
 
